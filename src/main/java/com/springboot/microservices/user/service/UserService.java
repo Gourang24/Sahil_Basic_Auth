@@ -32,4 +32,14 @@ public class UserService {
 		return save;
 	}
 
+	public User updateUserDetail(User user) {
+		User save = this.userdao.save(user);
+		return save;
+	}
+
+	public void deleteUserById(long userId) {
+		this.userdao.deleteById(userId);
+		
+	}
+
 }
