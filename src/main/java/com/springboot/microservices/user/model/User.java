@@ -18,9 +18,15 @@ import lombok.ToString;
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-private long userId;
-private String firstName;
-private String lastName;
-private String city;
+//private long userId;
+//private String firstName;
+//private String lastName;
+//private String city;
+	
+	 private int userId;
+    private String userName;
+    private String password;
+    private boolean active;
+    private String roles;
 
 }
