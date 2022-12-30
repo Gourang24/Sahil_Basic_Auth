@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.springboot.microservices.user.group.common.*;
 import com.springboot.microservices.user.dao.UserDao;
@@ -28,13 +29,14 @@ public class UserAuthService {
 		return findAll;
 	}
 
-	public Optional<User> findUserById(int userId) {
+	public Optional<User> findUserById(Long userId) {
 		return this.userdao.findById(userId);
 		//return user;
 		
 	}
 
 	public String addUserDetail(User user) {
+		if(StringUtils.isEmpty(user.getRoles()))
 		 user.setRoles(UserConstant.DEFAULT_ROLE);//USER
 	        String encryptedPwd = passwordEncoder.encode(user.getPassword());
 	        user.setPassword(encryptedPwd);
@@ -42,7 +44,7 @@ public class UserAuthService {
 	        return "Hi " + user.getUserName() + " welcome to group !";
 	}
 
-	public User updateUserDetail(User user, int userId) {
+	public User updateUserDetail(User user, Long userId) {
 		Optional<User> findById = this.userdao.findById(userId);
 		if (findById.isPresent()) {
 			User save = this.userdao.save(user);
@@ -55,7 +57,7 @@ public class UserAuthService {
 //		return save;
 	}
 
-	public void deleteUserById(int userId) {
+	public void deleteUserById(Long userId) {
 		//if (userdao.findById(userId).get() != null) {
 		 Optional<User> findById = this.userdao.findById(userId);
 			if (findById.isPresent()) {

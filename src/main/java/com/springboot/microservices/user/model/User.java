@@ -8,22 +8,17 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 @Entity
 public class User {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-//private long userId;
-//private String firstName;
-//private String lastName;
-//private String city;
 	
-	 private int userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long userId;
     private String userName;
     private String password;
     private boolean active;

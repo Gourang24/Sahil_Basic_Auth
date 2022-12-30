@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.springboot.microservices.user.model.User;
 
 @Repository
-public interface UserDao extends JpaRepository<User, Integer>, CrudRepository<User, Integer>{
+public interface UserDao extends JpaRepository<User, Long>, CrudRepository<User, Long>{
 
 	Optional<User> findByUserName(String username);
 

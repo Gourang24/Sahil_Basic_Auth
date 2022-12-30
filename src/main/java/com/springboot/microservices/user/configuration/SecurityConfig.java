@@ -2,15 +2,19 @@ package com.springboot.microservices.user.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.springboot.microservices.user.group.service.GroupUserDetailsService;
+import com.springboot.microservices.user.util.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +23,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private GroupUserDetailsService groupUserDetailsService;
+    
+    @Autowired
+    private JwtRequestFilter jwtReqFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -27,15 +34,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeRequests().antMatchers("/user/join" ).permitAll().and().authorizeRequests()
-//                .antMatchers("/user/**","/post/**").authenticated().and().httpBasic();
-        .antMatchers("/users/**").authenticated().and().httpBasic();
-    }
+//        http.csrf().disable();
+//        http.authorizeRequests().antMatchers("/authenticate" ).permitAll().and().authorizeRequests()
+//        .antMatchers("/users/**").authenticated().and().httpBasic();
+    	
+    	http.csrf().disable()
+		.authorizeRequests()
+		.antMatchers("/authenticate")
+		.permitAll().antMatchers("/user").permitAll()
+		.anyRequest()
+		.authenticated()
+		.and()
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+http.addFilterBefore(jwtReqFilter, UsernamePasswordAuthenticationFilter.class);
+}
+    
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+    
 }
